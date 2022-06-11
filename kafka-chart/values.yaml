@@ -1,0 +1,1 @@
+dvertisedListeners: [ INTERNAL://kafka-0.kafka-headless.kafka-test.svc.cluster.local:9093,CLIENT://localhost:9092]
