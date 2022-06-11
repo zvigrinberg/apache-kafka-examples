@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 public class PaymentEventRecord {
-    private boolean paymentIncluded;
+    private String customerId;
+    private String paymentId;
+    private String item;
     private Integer amount;
     private boolean loan;
     private String inAdvanceFee;

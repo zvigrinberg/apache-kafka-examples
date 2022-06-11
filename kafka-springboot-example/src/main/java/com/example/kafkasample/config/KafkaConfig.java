@@ -1,5 +1,7 @@
 package com.example.kafkasample.config;
 
+import com.example.kafkasample.model.ReceiptEventRecord;
+import com.example.kafkasample.producer.ReceiptsProducer;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -15,6 +17,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.*;
+import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +59,7 @@ public class KafkaConfig {
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "payment_consumers");
         props.put(ConsumerConfig.CLIENT_DNS_LOOKUP_CONFIG, "use_all_dns_ips");
 
-        props.put(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, environment.getProperty("HOSTNAME"));
+        props.put(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG, environment.getProperty("CONSUMER_NAME"));
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
@@ -64,7 +67,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ProducerFactory<Integer, String> producerFactory() {
+    public ProducerFactory<Integer, ReceiptEventRecord> producerFactory() {
         return new DefaultKafkaProducerFactory<>(senderProps());
     }
 
@@ -73,15 +76,15 @@ public class KafkaConfig {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ProducerConfig.LINGER_MS_CONFIG, 10);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         props.put(ProducerConfig.CLIENT_DNS_LOOKUP_CONFIG, "use_all_dns_ips");
         //...
         return props;
     }
 
     @Bean
-    public KafkaTemplate<Integer, String> kafkaTemplate(ProducerFactory<Integer, String> producerFactory) {
-        return new KafkaTemplate<Integer, String>(producerFactory);
+    public KafkaTemplate<Integer, ReceiptEventRecord> kafkaTemplate(ProducerFactory<Integer, ReceiptEventRecord> producerFactory) {
+        return new KafkaTemplate<Integer, ReceiptEventRecord>(producerFactory);
     }
 
 }
