@@ -21,10 +21,10 @@ kafka-console-producer.sh \
 ```shell
 kafka-console-consumer.sh \            
    --bootstrap-server kafka.kafka-test.svc.cluster.local:9092 \
-   --topic test \
+   --topic topic-name  \
    --from-beginning
 ```
-6. Now in order to connect the application to cluster, all you have to do is to port-forward pod/service port 9092 of kafka broker to localhost:9092
+6. Now in order to connect the application to kafka, all you have to do is to port-forward pod/service port 9092 of kafka broker to localhost:9092
 ```shell
 oc port-forward svc/kafka 9092
 ```
